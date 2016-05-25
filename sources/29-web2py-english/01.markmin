@@ -31,7 +31,7 @@ administration interface to access the database and the tables.
 
 web2py differs from other web frameworks in that it is the only framework to fully embrace the Web 2.0
 paradigm, where the web is the computer. In fact, web2py does not require installation or configuration; it
-runs on any architecture that can run Python (Windows, Windows CE, Mac OS X, iOS, and Unix/Linux), and the development, deployment, and maintenance phases for the applications can be done via a local or remote web interface.  web2py runs with CPython (the C implementation) and PyPy (Python written in Python), on Python versions 2.5, 2.6, and 2.7.
+runs on any architecture that can run Python (Windows, Windows CE, Mac OS X, iOS, and Unix/Linux), and the development, deployment, and maintenance phases for the applications can be done via a local or remote web interface.  web2py runs with CPython (the C implementation) and PyPy (Python written in Python), on Python 2.7.
 
 web2py provides a ticketing system for error events. If an error occurs, a ticket is issued to the user,
 and the error is logged for the administrator.
@@ -198,7 +198,7 @@ It can serve and stream static files if the web server is not doing it yet.
 Here is a minimal and complete MVC application, consisting of three files:
 
 **"db.py" is the model:**
-
+A very simple web2py app would define a database connection like so:
 ``
 db = DAL('sqlite://storage.sqlite')
 db.define_table('contact',
@@ -213,6 +213,24 @@ generates SQL code in the appropriate SQL dialect for the specific database engi
 The developer can
 see the generated SQL but does not need to change the code if the database back-end, which defaults to
 SQLite, is replaced with MySQL, PostgreSQL, MSSQL, FireBird, Oracle, DB2, Informix, Interbase, Ingres, and the Google App Engine (both SQL and NoSQL).
+
+Note that modern versions of web2py leave the specific database connection to a configuration text file stored in the application's private directory. This makes it easier to deploy the application from a development environment to a production server because there is almost certainly a different database connection. So, instead of
+``
+db = DAL('sqlite://storage.sqlite')
+
+``:code
+
+You will see code like this:
+``
+## app configuration made easy. Look inside private/appconfig.ini
+from gluon.contrib.appconfig import AppConfig
+## once in production, remove reload=True to gain full speed
+myconf = AppConfig(reload=True)
+...
+db = DAL(myconf.take('db.uri'), pool_size=myconf.take('db.pool_size', cast=int), check_reserved=['all'])
+``:code
+
+If you look at the configuration textfile ``private/appconfig.ini`` you will see that it still defaults to sqlite.
 
 Once a table is defined and created, web2py also generates a fully functional web-based database
 administration interface, called **appadmin**, to access the database and the tables.
@@ -254,7 +272,7 @@ easily be modified or replaced.
 
 web2py is one of many web application frameworks, but it has compelling and unique features.
 web2py was originally developed as a teaching tool, with the following primary motivations:
-- Easy for users to learn server-side web development without compromising functionality. For this reason, web2py requires no installation and no configuration, has no dependencies (except for the source code distribution, which requires Python 2.5 and its standard library modules), and exposes most of its functionality via a Web interface, including an Integrated Development Environment with Debugger and database interface.
+- Easy for users to learn server-side web development without compromising functionality. For this reason, web2py requires no installation and no configuration, has no dependencies (except for the source code distribution, which requires Python 2.7 and its standard library modules), and exposes most of its functionality via a Web interface, including an Integrated Development Environment with Debugger and database interface.
 - web2py has been stable from day one because it follows a top-down design; i.e., its API was designed before it was implemented. Even as new functionality has been added, web2py has never broken backwards compatibility, and it will not break compatibility when additional functionality is added in the future.
 - web2py proactively addresses the most important security issues which plague many modern web applications, as determined by OWASP``owasp``:cite  below.
 - web2py is lightweight. Its core libraries, including the Database Abstraction Layer, the template language, and all the helpers amount to 1.4MB. The entire source code including sample applications and images amounts to 10.4MB.
@@ -307,7 +325,7 @@ web2py is composed of the following components:
 web2py is distributed in source code, and in binary form for Microsoft Windows and for Mac OS X.
 
 The source code distribution can be used in any platform where Python runs and includes the above-mentioned components.
-To run the source code, you need Python 2.5, 2.6 or 2.7 pre-installed on the system. You also need one of the supported database engines installed.
+To run the source code, you need Python 2.7 pre-installed on the system. You also need one of the supported database engines installed.
 For testing and light-demand applications, you can use the SQLite database, included with Python 2.7.
 
 The binary versions of web2py (for Windows and Mac OS X) include a Python 2.7 interpreter and
@@ -350,7 +368,7 @@ This book has been written using the MARKMIN syntax [[See Chapter 5 ../05#markmi
 ### Support
 
 The main support channel is the usergroup``usergroup``:cite, with dozens of posts every day. Even if you're a newbie, don't hesitate to ask - we'll be pleased to help you.  
-There is also a formal issue tracker system on http://code.google.com/p/web2py/issues . Last but not least, you can have professional support (see the web site for details). 
+There is also a formal issue tracker system on https://github.com/web2py/web2py/issues . Last but not least, you can have professional support (see the web site for details). 
 
 ### Contribute
 
@@ -584,7 +602,7 @@ Luca De Alfaro,
 Luca Zachetti,
 Lucas D'Avila,
 Madhukar R Pai,
-Manuele Presenti,
+Manuele Pesenti,
 Marc Abramowitz,
 Marcel Hellkamp,
 Marcel Leuthi,
@@ -708,7 +726,7 @@ Zahariash.
 
 I am sure I forgot somebody, so I apologize.
 
-I particularly thank Anthony, Jonathan, Mariano, Bruno, Vladyslav, Martin, Nathan, Simone, Thadeus, Tim, Iceberg, Denes, Hans, Christian, Fran and Patrick for their major contributions to web2py and Anthony, Alvaro, Brian, Bruno, Denes, Dane Denny, Erwin, Felipe, Graham, Jonathan, Hans, Kyle, Mark, Margaret, Michele, Nico, Richard, Roberto, Robin, Roman, Scott, Shane, Sharriff, Sriram, Sterling, Stuart, Thadeus, Wen (and others) for proofreading various versions of this book. Their contribution was invaluable. If you find any errors in this book, they are exclusively my fault, probably introduced by a last-minute edit. I also thank Ryan Steffen of Wiley Custom Learning Solutions for help with publishing the first edition of this book.
+I particularly thank Anthony, Simone, Richard, Jonathan, Mariano, Bruno, Vladyslav, Martin, Nathan, Thadeus, Tim, Iceberg, Denes, Hans, Christian, Fran and Patrick for their major contributions to web2py and Anthony, Alvaro, Brian, Bruno, Denes, Dane Denny, Erwin, Felipe, Graham, Jonathan, Hans, Kyle, Mark, Margaret, Michele, Nico, Richard, Roberto, Robin, Roman, Scott, Shane, Sharriff, Sriram, Sterling, Stuart, Thadeus, Wen (and others) for proofreading various versions of this book. Their contribution was invaluable. If you find any errors in this book, they are exclusively my fault, probably introduced by a last-minute edit. I also thank Ryan Steffen of Wiley Custom Learning Solutions for help with publishing the first edition of this book.
 
 web2py contains code from the following authors, whom I would like to thank:
 

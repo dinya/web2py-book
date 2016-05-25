@@ -23,7 +23,8 @@ form['_style']='border:1px solid black'
 Consider as an example a **test** application with the following "default.py" controller:
 ``
 def display_form():
-    return dict()
+    form = FORM('Your name:', INPUT(_name='name'), INPUT(_type='submit'))
+    return dict(form=form) 
 ``:code
 
 and the associated "default/display_form.html" view:
@@ -476,7 +477,7 @@ col3 = {'name':A('what is this?',
 - ``readonly``. If set to True, displays the form as readonly
 - ``comments``. If set to False, does not display the col3 comments
 - ``ignore_rw``. Normally, for a create/update form, only fields marked as writable=True are shown, and for readonly forms, only fields marked as readable=True are shown. Setting ``ignore_rw=True`` causes those constraints to be ignored, and all fields are displayed. This is mostly used in the appadmin interface to display all fields for each table, overriding what the model indicates.
-- ``formstyle``:inxx ``formstyle`` determines the style to be used when serializing the form in html. It can be "table3cols" (default), "table2cols" (one row for label and comment, and one row for input), "ul" (makes an unordered list of input fields), "divs" (represents the form using css friendly divs, for arbitrary customization), "bootstrap" which uses the bootstrap form class "form-horizontal". ``formstyle`` can also be a function which generates everything inside the FORM tag. You pass to your form constructor function two arguments, form and fields. Hints can be found in the source code file sqlhtml.py (look for functions named formstyle_) 
+- ``formstyle``:inxx ``formstyle`` determines the style to be used when serializing the form in html. In a modern app based on the Welcome scaffolding app, the default formstyle is set in db.py using the application's private/appconfig.ini file; the default is currently bootstrap3_inline. Other options are "bootstrap3_stacked","bootstrap2", "table3cols", "table2cols" (one row for label and comment, and one row for input), "ul" (makes an unordered list of input fields), "divs" (represents the form using css friendly divs, for arbitrary customization), "bootstrap" which uses the bootstrap 2.3 form class "form-horizontal". ``formstyle`` can also be a function which generates everything inside the FORM tag. You pass to your form constructor function two arguments, form and fields. Hints can be found in the source code file sqlhtml.py (look for functions named formstyle_) 
 - ``buttons``:inxx ``buttons`` is a list of ``INPUT``s or ``TAG.button``s (though technically could be any combination of helpers) that will be added to a DIV where the submit button would go. 
 For example, adding a URL-based back-button (for a multi-page form) and a renamed submit button:
 ``
@@ -878,7 +879,7 @@ if form.validate():
     if form.deleted:
         db(db.person.id==record.id).delete()
     else:
-        record.update_record(**dict(form.vars))
+        form.record.update_record(**dict(form.vars))
     response.flash = 'record updated'
 ``:code
 
@@ -1312,6 +1313,7 @@ crud.search(table, query, queries, query_labels, fields, field_labels, zero, sho
 - ``zero`` defaults to "choose one" is used as default option for the drop-down in the search widget.
 - ``showall`` set it to True if you want rows returned as per the query in the first call (added after 1.98.2).
 - ``chkall`` set it to True to turn on all the checkboxes in the search form (added after 1.98.2).
+- ``**attr`` additional ``crud.select`` keyword arguments to be passed to the ``SQLTABLE`` constructor (see [[DAL chapter ../06#sqltable]]).
 
 Here is an example of usage in a single controller function:
 ``
@@ -2495,7 +2497,7 @@ db.my_table.a_field.writable = False
 db.my_table.a_field.readable = False
 
 ``:code
-- ``field_id`` must be the field of the table to be used as ID, for example ``db.mytable.id``.
+- ``field_id`` must be the field of the table to be used as ID, for example ``db.mytable.id``. This is useful when the grid query is a join of several tables. Any action button on the grid(add record, view, edit, delete) will work over db.mytable. 
 - ``left`` is an optional left join expressions used to build ``...select(left=...)``.
 - ``headers`` is a dictionary that maps 'tablename.fieldname' into the corresponding header label, e.g. ``{'auth_user.email' : 'Email Address'}``
 - ``orderby`` is used as default ordering for the rows. See [[DAL chapter ../06#orderby]] (multiple fields are possible).
@@ -2652,7 +2654,7 @@ Notice the extra "children" links. One could create the extra ``links`` using a 
 Also notice that when clicking on the "children" link for a given parent one only gets the list of children for that parent (and that is obvious) but also notice that if one now tried to add a new child, the parent value for the new child is automatically set to the selected parent (displayed in the breadcrumbs associated to the object). The value of this field can be overwritten. We can prevent this by making it readonly:
 
 ``
-@auth.requires_login():
+@auth.requires_login()
 def manage():
     db.child.parent.writable = False
     grid = SQLFORM.smartgrid(db.parent,linked_tables=['child'])
@@ -2664,7 +2666,7 @@ If the ``linked_tables`` argument is not specified all referencing tables are au
 The following code creates a very powerful management interface for all tables in the system:
 
 ``
-@auth.requires_membership('managers'):
+@auth.requires_membership('managers')
 def manage():
     table = request.args(0) or 'auth_user'
     if not table in db.tables(): redirect(URL('error'))

@@ -1,5 +1,40 @@
-## Deployment recipes
 
+## Deployment: development and production
+``appconfig``:inxx
+[[appconfig]]
+### AppConfig module
+
+The environment between your development and production system will almost certainly mean a different database configuration, different mail servers and possibly other differences.
+
+Web2py intends the private directory for storing information which is not replicated in a typical deployment to production (although you need to take care to make sure that you are not deploying that directory). 
+
+The contributed module ``AppConfig`` allows the private directory to store a simple configuration text file to define settings which vary between dev and production, such as database connections. By default it is a text file which is pythonesque, but json is also supported.
+
+The welcome app now uses this module in ``db.py`` to read configuration from a file in the application's private directory. By default the path to this file is 
+``private/appconfig.ini``
+
+By default, ``appconfig.ini`` allows you to define a database connection and smtp configuration. When the application is stable, the module can be set to cached mode to reduce overhead.
+``
+from gluon.contrib.appconfig import AppConfig
+...
+myconf = AppConfig(reload=False)``:code
+
+Applications created in a recent version of web2py default to having the database connection defined with AppConfig. 
+
+The values in app_config.ini are fetched and cast from a string value by like so:
+``
+myconf = AppConfig()
+...
+a_config_value = myconf.take('example_section.example_key',cast=int)
+``:code
+
+Because the casting occurs from a string, and non empty strings cast to True, the safest way to represent a Boolean False is with an empty string:
+``
+[example_section]
+example_key = 
+``:code
+
+## Deployment recipes: Infrastructure
 There are multiple ways to deploy web2py in a production environment. The details depend on the configuration and the services provided by the host.
 
 In this chapter we consider the following issues:
@@ -184,9 +219,9 @@ and include the following code:
     </Files>
   </Directory>
 
-  AliasMatch ^/([^/]+)/static/(.*) \
-           /users/www-data/web2py/applications/$1/static/$2
-  <Directory /users/www-data/web2py/applications/*/static/>
+  AliasMatch ^/([^/]+)/static/(?:_[\d]+.[\d]+.[\d]+/)?(.*) \
+           /home/www-data/web2py/applications/$1/static/$2
+  <Directory /home/www-data/web2py/applications/*/static/>
     Order Allow,Deny
     Allow from all
   </Directory>
@@ -245,20 +280,20 @@ WSGIProcessGroup web2py
 delegates running of all WSGI applications to the daemon process group
 that was configured using the WSGIDaemonProcess directive.
 ``
-WSGIScriptAlias / /users/www-data/web2py/wsgihandler.py
+WSGIScriptAlias / /home/www-data/web2py/wsgihandler.py
 ``:code
 
 mounts the web2py application. In this case it is mounted at the root
 of the web site.
 ``
-<Directory /users/www-data/web2py>
+<Directory /home/www-data/web2py>
   ...
 </Directory>
 ``:code
 
 gives Apache permission to access the WSGI script file.
 ``
-<Directory /users/www-data/web2py/applications/*/static/>
+<Directory /home/www-data/web2py/applications/*/static/>
   Order Allow,Deny
   Allow from all
 </Directory>
@@ -325,9 +360,9 @@ and edit the Apache configuration file ``web2py.conf`` and append:
 
   WSGIProcessGroup web2py
 
-  WSGIScriptAlias / /users/www-data/web2py/wsgihandler.py
+  WSGIScriptAlias / /home/www-data/web2py/wsgihandler.py
 
-  <Directory /users/www-data/web2py>
+  <Directory /home/www-data/web2py>
     AllowOverride None
     Order Allow,Deny
     Deny from all
@@ -336,10 +371,10 @@ and edit the Apache configuration file ``web2py.conf`` and append:
     </Files>
   </Directory>
 
-  AliasMatch ^/([^/]+)/static/(.*) \
-        /users/www-data/web2py/applications/$1/static/$2
+  AliasMatch ^/([^/]+)/static/(?:_[\d]+.[\d]+.[\d]+/)?(.*) \
+        /home/www-data/web2py/applications/$1/static/$2
 
-  <Directory /users/www-data/web2py/applications/*/static/>
+  <Directory /home/www-data/web2py/applications/*/static/>
     Order Allow,Deny
     Allow from all
   </Directory>
@@ -374,7 +409,7 @@ Here is a minimal Apache configuration:
 NameVirtualHost *:80
 #### deal with requests on port 80
 <VirtualHost *:80>
-   Alias / /users/www-data/web2py/applications
+   Alias / /home/www-data/web2py/applications
    ### serve static files directly
    <LocationMatch "^/welcome/static/.*">
     Order Allow, Deny
@@ -413,7 +448,7 @@ NameVirtualHost *:80
 NameVirtualHost *:443
 #### deal with requests on port 80
 <VirtualHost *:80>
-   Alias / /users/www-data/web2py/applications
+   Alias / /home/www-data/web2py/applications
    ### admin requires SSL
    <LocationMatch "^/admin">
      SSLRequireSSL
@@ -665,7 +700,7 @@ server.port = 80
 server.bind = "0.0.0.0"
 server.event-handler = "freebsd-kqueue"
 server.error-handler-404 = "/test.fcgi"
-server.document-root = "/users/www-data/web2py/"
+server.document-root = "/home/www-data/web2py/"
 server.errorlog      = "/tmp/error.log"
 
 fastcgi.server = (
@@ -906,6 +941,43 @@ sudo status web2py-scheduler
 
 ### Windows
 
+#### IIS
+If you don't need to run Apache for some other application on the server, on modern Windows Servers installing web2py behind IIS is easier (and more performant). The following steps explain how to setup IIS in order to serve web2py: Windows Server 2008R2 or higher is needed.
+
+We'll start from the assumption that you're running 2012R2. The terms used for 2008R2 are slightly different but it shouldn't be a problem to reconcile the instructions.
+Of course the requirements are a Python installed on the server and you being able to run web2py with something like 
+
+``
+python web2py.py -a 'yourpassword'
+``
+This means that nothing is broken in your installation and that you can host successfully web2py behind IIS.
+
+In order to run Python, IIS needs the **CGI** feature installed.
+In order to serve static files with IIS, we need also the **Url Rewrite** module that you can install from [[here http://www.iis.net/downloads/microsoft/url-rewrite]]
+
+To let IIS "speak" with python, we need to install the wfastcgi module from [[here http://pytools.codeplex.com/releases]] . This will install a little script, wfasctgi.py, that is the handler the IIS will use to communicate with Python.
+
+Now, open the **Internet Information Services (IIS) Manager** and click on the node representing the server. 
+
+We need to create a **FastCGI** process that will be mapped to the handler running web2py.
+
+Click on the **FastCGI Settings** box, and then to "Add Application": the "full path" needs to point to the python executable (something like "C:\Python27\python.exe") while the "Arguments" needs to point to the wfastcgi.py path (usually C:\Python27\Scripts\wfastcgi.py").
+
+From 2.10.4, web2py ships with a configuration file (web.config, inside the examples directory) that overrides the default handlers in order to work. The IIS configuration prohibits altering the handlers from a configuration file, but it's easy to disable the check: go to "Feature Delegation", find "Handler Mappings" and set it to Read/Write.
+Web2py needs also to be able to write files in his directory, so please make sure that the **IIS_IUSRS** group has read/write access to the folder where web2py is.
+
+If you want to use web2py under the root of IIS, copy the source code under the root of IIS (that is usually C:\inetpub\wwwroot). Now, copy the web.config out of the examples directory and put it on the root folder, alongside web2py.py. You only need to replace **SCRIPT_PROCESSOR** (near the end of the file) to match the FastCGI application we created earlier: it has a funny syntax, but it needs to match the format **Full Path|Arguments** of the FastCGI application. 
+
+If you have everything installed in the default paths, it needs to be something like **C:\Python27\python.exe|C:\Python27\Scripts\wfastcgi.py**
+
+This is sufficient to use web2py as the "root" application of a site. If instead you need to run web2py under a subfolder (let's say, "web2pyapps", so you can reach the welcome app at http://hostname/web2pyapps/welcome/ instead of the default http://hostname/welcome/), two additional steps are needed:
+  - move the code to a subfolder named web2pyapps
+  - create a routes.py file with 
+  ``
+routers = dict(BASE=dict(path_prefix = "web2pyapps"))
+  `` in it
+  - inside the IIS Manager, locate the web2pyapps folder, right click on it and select "Convert to Application"
+
 #### Apache and mod_wsgi
 
 Installing Apache, and mod_wsgi, under Windows requires a slightly different procedure. However, it is quite similar to Linux, so please read the Linux Apache notes above.
@@ -1127,7 +1199,7 @@ If it does not exist already, web2py creates, under the hood, a table in the dat
 ``
 Field('locked', 'boolean', default=False),
 Field('client_ip'),
-Field('created_datetime', 'datetime', default=now),
+Field('created_datetime', 'datetime', default=request.now),
 Field('modified_datetime', 'datetime'),
 Field('unique_key'),
 Field('session_data', 'text')
@@ -1141,7 +1213,7 @@ To minimize database access, you should avoid storing sessions when they are not
 session.forget()
 ``:code
 
-Sessions are automatically forgotten is unchanged.
+Sessions are automatically forgotten if unchanged.
 
 With sessions in database, "sessions" folder does not need to be a shared folder because it will no longer be accessed. 
 
@@ -1342,11 +1414,11 @@ An alternative to Memcache is use Redis. ``Redis``:inxx
 Assuming we have Redis installed and running on localhost at port 6379, we can connect to it using the following code (in a model):
 
 ``
+from gluon.contrib.redis_utils import RConn
 from gluon.contrib.redis_cache import RedisCache
-cache.redis = RedisCache('localhost:6379',db=None, debug=True)
+rconn = RConn('localhost', 6379)
+cache.redis = RedisCache(redis_conn=rconn, debug=True)
 ``
-
-where 'localhost:6379' is the connection string and ``db`` is not a DAL object but a Redis database name.
 
 We can now use ``cache.redis`` in place of (or along with) ``cache.ram`` and ``cache.disk``.
 
@@ -1363,8 +1435,10 @@ You can also enable the behaviour "on-demand" with ``value = cache.redis('mykey'
 #### Sessions in Redis
 If you have Redis in your stack, why not use it for sessions ?
 ``
+from gluon.contrib.redis_utils import RConn
 from gluon.contrib.redis_session import RedisSession
-sessiondb = RedisSession('localhost:6379',db=0, session_expiry=False)
+rconn = RConn()
+sessiondb = RedisSession(redis_conn=rconn, session_expiry=False)
 session.connect(request, response, db = sessiondb)
 ``
 The code has been tested with ~1M sessions. As long as Redis can fit in memory, the time taken to handle
@@ -1378,7 +1452,7 @@ sessions generated (so for 1000 sessions, 1002 keys).
 If ``session_expiry`` is not set, sessions will be handled as usual, you'd need to [[cleanup sessions as usual @///chapter/13#Cleaning-up-sessions]] once a while.
 
 However, when ``session_expiry`` is set will delete automatically sessions after n seconds
-(e.g. if set to 3600, session will expire exactly one hour later having been updated the last time), 
+(e.g. if set to 3600, session will expire exactly one hour later having been updated the last time),
 you should occasionally run sessions2trash.py just to clean the key holding the set of all
 the sessions previously issued (for ~1M sessions, cleaning up requires 3 seconds)
 The redis backend for sessions is the only one that can prevent concurrent modifications to the same session: this is especially true
@@ -1512,9 +1586,9 @@ We thank the PythonAnywhere team for their help and support.
 ### Deploying on Heroku
 ``heroku``:cite ``Heroku``:inxx
 
-Heroku is a modern and agile multiplatform hosting solution. It allows to push your applications to a server cloud using Git. In order to user Heroku you must have Git installed and you must have the Heroku SDK installed. You interact heroku using the SDK locally and your commands will be pushed and executed on the server.
+Heroku is a modern and agile multiplatform hosting solution. It allows you to push your applications to a cloud server using Git. In order to use Heroku you must have Git and the Heroku SDK installed. You interact with Heroku using the SDK locally and your commands will be pushed and executed on the server.
 
-Applications running on Heroku cannot rely on a persistent filesystem since it is refreshed periodically. For this reason only the application code can be stored on the file system. All data must be stored in the database. Heroku relies on PostgreSQL. Yet the PostgreSQL is also configured using the Heroku SDK and the URI for the database is assigned dynamically at run-time and stored in an environment variable.
+Applications running on Heroku cannot rely on a persistent filesystem since it is refreshed periodically, for this reason only the application code can be stored on the file system. All data must be stored in the database. Heroku relies on PostgreSQL. Yet the PostgreSQL is also configured using the Heroku SDK and the URI for the database is assigned dynamically at run-time and stored in an environment variable.
 
 This means that web2py applications must be modified to work on Heroku in order to use the database.
 
@@ -1603,7 +1677,8 @@ Once your image is deployed you can login into it as a normal VPS and you can ma
 
 It is possible to run web2py code on Google App Engine (GAE)``gae``:cite , including DAL code.
 
-GAE supports two versions of Python: 2.5 and 2.7 web2py supports both but uses 2.5 by default (this may change in the future). Look into the "app.yaml" file described below for configuration details.
+GAE supports two versions of Python: 2.5 and 2.7 but web2py requires 2.7.
+Look into the "app.yaml" file described below for configuration details.
 
 GAE also supports a Google SQL database (compatible with MySQL) and a Google NoSQL (referred to as "Datastore").
 
@@ -1704,10 +1779,10 @@ Occasionally you may want to edit this file and perform cleanup, such as removin
 
 ##### Linux
 
-Here we assume you have installed the GAE SDK.  At the time of writing, GAE runs on Python 2.5.2.  You can run your app from inside the "web2py" folder by using the appserver command:
+Here we assume you have installed the GAE SDK.  At the time of writing, web2py for GAE requires Python 2.7.  You can run your app from inside the "web2py" folder by using the appserver command:
 
 ``
-python2.5 dev_appserver.py ../web2py
+python dev_appserver.py ../web2py
 ``:code
 
 This will start the appserver and you can run your application at the URL:
@@ -1719,7 +1794,7 @@ http://127.0.0.1:8080/
 In order to upload your app on GAE, make sure you have edited the "app.yaml" file as explained before and set the proper application id, then run:
 
 ``
-python2.5 appcfg.py update ../web2py
+python appcfg.py update ../web2py
 ``:code
 
 ##### Mac, Windows
@@ -1897,4 +1972,3 @@ https://myapp.appspot.com/
 In this case it will use an "appspot.com" certificate provided by Google.
 
 You can register a DNS entry and use any other domain name you own for your app but you will not be able to use HTTPS on it. At the time of writing, this is a GAE limitation.
-
