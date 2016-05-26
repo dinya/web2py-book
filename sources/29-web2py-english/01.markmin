@@ -336,7 +336,7 @@ The following image depicts the overall web2py structure:
 
 [[image @///image/en300.png center 480px]]
 
-At the bottom we find the interpreter. Moving up we find the web server (rocket), the libraries, and the applications. Each application consists for its own MVC design (models, controllers, views, modules, languages, databases, and static files). Each application includes it own database administration code (appadmin). Every web2py instance ships with three applications: welcome (the scaffolding app), admin (the web based IDE), and examples (copy of website and examples). 
+At the bottom we find the interpreter. Moving up we find the web server (rocket), the libraries, and the applications. Each application consists for its own MVC design (models, controllers, views, modules, languages, databases, and static files). Each application includes it own database administration code (appadmin). Every web2py instance ships with three applications: welcome (the scaffolding app), admin (the web based IDE), and examples (copy of website and examples).
 
 ### About this book
 
@@ -367,13 +367,13 @@ This book has been written using the MARKMIN syntax [[See Chapter 5 ../05#markmi
 
 ### Support
 
-The main support channel is the usergroup``usergroup``:cite, with dozens of posts every day. Even if you're a newbie, don't hesitate to ask - we'll be pleased to help you.  
-There is also a formal issue tracker system on https://github.com/web2py/web2py/issues . Last but not least, you can have professional support (see the web site for details). 
+The main support channel is the usergroup``usergroup``:cite, with dozens of posts every day. Even if you're a newbie, don't hesitate to ask - we'll be pleased to help you.
+There is also a formal issue tracker system on https://github.com/web2py/web2py/issues . Last but not least, you can have professional support (see the web site for details).
 
 ### Contribute
 
-Any help is really appreciated. You can help other users on the user group, or by directly submitting patches on the program (at the GitHub site https://github.com/web2py/web2py). 
-Even if you find a typo on this book, or have an improvement on it, the best way to help is by patching the book itself (which is under the source folder of the repository 
+Any help is really appreciated. You can help other users on the user group, or by directly submitting patches on the program (at the GitHub site https://github.com/web2py/web2py).
+Even if you find a typo on this book, or have an improvement on it, the best way to help is by patching the book itself (which is under the source folder of the repository
 at https://github.com/mdipierro/web2py-book).
 For more information on contributing, please see [[Chapter 15 ..\15]]
 
@@ -735,4 +735,3 @@ Guido van Rossum for Python``python``:cite, Peter Hunt, Richard Gordon, Timothy 
 I thank Helmut Epp (provost of DePaul University), David Miller (Dean of the College of Computing and Digital Media of DePaul University), and Estia Eichten (Member of MetaCryption LLC), for their continuous trust and support.
 
 Finally, I wish to thank my wife, Claudia, and my son, Marco, for putting up with me during the many hours I have spent developing web2py, exchanging emails with users and collaborators, and writing this book. This book is dedicated to them.
-

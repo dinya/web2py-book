@@ -1,4 +1,4 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 {
 '!langcode!': 'ru',
 '!langname!': 'Русский',
@@ -22,6 +22,7 @@
 '1 second ago': '1 секунду тому',
 '1 week ago': '1 неделю тому',
 '1 year ago': '1 год тому',
+'@markmin\x01An error occured, please [[reload %s]] the page': 'An error occured, please [[reload %s]] the page',
 'About': 'About',
 'Access Control': 'Access Control',
 'Administrative Interface': 'Administrative Interface',
@@ -71,6 +72,7 @@
 'Edit current record': 'Редактировать текущую запись',
 'Edit Profile': 'Редактировать профиль',
 'Email and SMS': 'Email and SMS',
+'Enter a valid URL': 'Enter a valid URL',
 'enter an integer between %(min)g and %(max)g': 'enter an integer between %(min)g and %(max)g',
 'Errors': 'Errors',
 'export as csv file': 'экспорт в  csv-файл',
@@ -189,6 +191,7 @@
 'Welcome to web2py': 'Добро пожаловать в web2py',
 'Welcome to web2py!': 'Welcome to web2py!',
 'Which called the function %s located in the file %s': 'Which called the function %s located in the file %s',
+'Working...': 'Working...',
 'You are successfully running web2py': 'You are successfully running web2py',
 'You can modify this application and adapt it to your needs': 'You can modify this application and adapt it to your needs',
 'You visited the url %s': 'You visited the url %s',
