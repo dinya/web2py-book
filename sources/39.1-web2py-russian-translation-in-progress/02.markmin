@@ -1,21 +1,23 @@
-## The Python language
+## Язык программирования Python
 ``Python``:inxx
 
-### About Python
-Python is a general-purpose high-level programming language.
+### О Python
+Python является высокоуровневым языком программирования общего назначения.
 Its design philosophy emphasizes programmer productivity and code readability. It has a minimalist core syntax with very few basic commands and simple semantics, but it also has a large and comprehensive standard library, including an Application Programming Interface (API) ``API``:inxx to many of the underlying operating system (OS) functions. Python code, while minimalist, defines built-in objects such as linked lists (``list``), tuples (``tuple``), hash tables (``dict``), and arbitrarily long integers (``long``).
 
 Python supports multiple programming paradigms, including object-oriented (``class``), imperative (``def``), and functional (``lambda``) programming. Python has a dynamic type system and automatic memory management using reference counting (similar to Perl, Ruby, and Scheme).
 
-Python was first released by Guido van Rossum in 1991. The language has an open, community-based development model managed by the non-profit Python Software Foundation. There are many interpreters and compilers that implement the Python language, including one in Java (Jython) but, in this brief review, we refer to the reference C implementation created by Guido.
+Python was first released by Guido van Rossum in 1991. The language has an open, community-based development model
+managed by the non-profit Python Software Foundation. There are many interpreters and compilers that implement the Python language,
+including one in Java (Jython) but, in this brief review, we refer to the reference C implementation created by Guido.
 
-You can find many tutorials, the official documentation and library references of the language on the official Python website.``python``:cite
+На официальном сайте Python``python``:cite Вы можете найти множество руководств, официальную документацию и ссылки на библиотеки языка.
 
-For additional Python references, we can recommend the books in ref.``guido``:cite  and ref.``lutz``:cite .
+В дополнение к данным источникам, мы можем порекомендовать книги ref.``guido``:cite и ref.``lutz``:cite .
 
-You may skip this chapter if you are already familiar with the Python language.
+Вы можете пропустить эту главу, если Вы уже знакомы с языком Python.
 
-### Starting up
+### Как запустить
 ``shell``:inxx
 The binary distributions of web2py for Microsoft Windows or Apple OS X come packaged with the Python interpreter built into the distribution file itself.
 
@@ -45,7 +47,7 @@ http://127.0.0.1:8000/admin/shell/index/welcome
 
 You can try all the examples in this chapter using the normal shell or the web-based shell.
 
-### help, dir
+### ``help``, ``dir`` (внутренняя документация Python)
 ``help``:inxx ``dir``:inxx
 
 The Python language provides two commands to obtain documentation about objects defined in the current scope, both built-in and user-defined.
@@ -80,7 +82,7 @@ Similarly, we can obtain a list of methods of the object "1" with the command ``
 ['__abs__', ..., '__xor__']
 ``:code
 
-### Types
+### Типы
 ``type``:inxx
 Python is a dynamically typed language, meaning that variables do not have a type and therefore do not have to be declared. Values, on the other hand, do have a type. You can query a variable for the type of value it contains:
 ``
@@ -97,7 +99,7 @@ Python is a dynamically typed language, meaning that variables do not have a typ
 
 Python also includes, natively, data structures such as lists and dictionaries.
 
-#### ``str``
+#### ``str`` (строки)
 ``str``:inxx ``ASCII``:inxx ``UTF8``:inxx ``Unicode``:inxx ``encode``:inxx
 
 Python supports the use of two different types of strings: ASCII strings and Unicode strings. ASCII strings are delimited by '...', "..." or by '''..''' or """...""". Triple quotes delimit multiline strings. Unicode strings start with a ``u`` followed by the string containing Unicode characters. A Unicode string can be converted into an ASCII string by choosing an encoding for example:
@@ -142,7 +144,7 @@ l
 o
 ``:code
 
-#### ``list``
+#### ``list`` (списки)
 ``list``:inxx
 
 The main methods of a Python list are append, insert, and delete:
@@ -208,7 +210,7 @@ This code clearly processes a list of items, selects and modifies a subset of th
 [6, 12]
 ``:code
 
-#### ``tuple``
+#### ``tuple`` (кортежи)
 ``tuple``:inxx
 
 A tuple is like a list, but its size and elements are immutable, while in a list they are mutable. If a tuple element is an object, the object attributes are mutable. A tuple is delimited by round brackets.
@@ -255,7 +257,7 @@ Tuples are very useful for efficient packing of objects because of their immutab
 hello
 ``:code
 
-#### ``dict``
+#### ``dict`` (словари)
 ``dict``:inxx
 
 A Python ``dict``-ionary is a hash table that maps a key object to a value object. For example:
@@ -311,9 +313,9 @@ Internally, Python uses the ``hash`` operator to convert objects into integers, 
 -1500746465
 ``:code
 
-### About indentation
+### Об отступах
 
-Python uses indentation to delimit blocks of code. A block starts with a line ending in colon, and continues for all lines that have a similar or higher indentation as the next line. For example:
+Python использует отступы для разделения блоков кода. A block starts with a line ending in colon, and continues for all lines that have a similar or higher indentation as the next line. For example:
 ``
 >>> i = 0
 >>> while i < 3:
@@ -328,7 +330,7 @@ Python uses indentation to delimit blocks of code. A block starts with a line en
 It is common to use four spaces for each level of indentation.
 It is a good policy not to mix tabs with spaces, which can result in (invisible) confusion.
 
-### ``for...in``
+### ``for...in`` (цикл "для каждого из...")
 ``for``:inxx
 In Python, you can loop over iterable objects:
 ``
@@ -389,7 +391,7 @@ You can jump to the next loop iteration without executing the entire code block 
 3
 ``:code
 
-### ``while``
+### ``while`` (цикл "пока")
 ``while``:inxx
 The ``while`` loop in Python works much as it does in many other programming languages, by looping an indefinite number of times and testing a condition before each iteration. If the condition is ``False``, the loop ends.
 ``
@@ -402,7 +404,7 @@ The ``while`` loop in Python works much as it does in many other programming lan
 
 There is no ``loop...until`` construct in Python.
 
-### ``if...elif...else``
+### ``if...elif...else`` (условный оператор, ветвление)
 ``if``:inxx ``elif``:inxx ``else``:inxx
 The use of conditionals in Python is intuitive:
 ``
@@ -425,7 +427,7 @@ other
 >>>         print '0 or 1'
 ``:code
 
-### ``try...except...else...finally``
+### ``try...except...else...finally`` (исключения)
 ``try``:inxx ``except``:inxx ``finally``:inxx ``Exception``:inxx
 Python can throw - pardon, raise - Exceptions:
 ``
@@ -515,7 +517,7 @@ web2py exposes only one new exception, called ``HTTP``. When raised, it causes t
 
 Any object can be raised as an exception, but it is good practice to raise objects that extend one of the built-in exception classes.
 
-### ``def...return``
+### ``def...return`` (функции)
 ``def``:inxx ``return``:inxx
 
 Functions are declared using ``def``.  Here is a typical Python function:
@@ -633,7 +635,7 @@ and a dictionary can be unpacked to deliver keyword arguments:
 3
 ``:code
 
-#### ``lambda``
+#### ``lambda`` (лямбда-функции)
 ``lambda``:inxx
 
 ``lambda`` provides a way to create a very short unnamed function very easily:
@@ -710,7 +712,7 @@ Python functions, created with either ``def`` or ``lambda`` allow re-factoring e
 ``cache.ram`` and ``cache.disk`` are web2py caching functions.
 -------
 
-### ``class``
+### ``class`` (классы)
 ``class``:inxx
 
 Because Python is dynamically typed, Python classes and objects may seem odd. In fact, you do not need to define the member variables (attributes) when declaring a class, and different instances of the same class can have different attributes. Attributes are generally associated with the instance, not the class (except when declared as "class attributes", which is the same as "static member variables" in C++/Java).
@@ -746,7 +748,7 @@ Notice that ``__init__`` takes 3 arguments and ``add`` takes one, and yet we cal
 
 This syntax is necessary to avoid ambiguity when declaring nested classes, such as a class that is local to a method inside another class.
 
-### Special attributes, methods and operators
+### Специальные аттрибуты, методы и операторы
 
 Class attributes, methods, and operators starting with a double underscore are usually intended to be private (i.e. to be used internally but not exposed outside the class) although this is a convention that is not enforced by the interpreter.
 
@@ -773,7 +775,7 @@ They can be used, for example, to create a container object that acts like a lis
 
 Other special operators include ``__getattr__`` and ``__setattr__``, which define the get and set attributes for the class, and ``__sum__`` and ``__sub__``, which overload arithmetic operators. For the use of these operators we refer the reader to more advanced books on this topic. We have already mentioned the special operators ``__str__`` and ``__repr__``.
 
-### File input/output
+### Файловый ввод/вывод
 ``file.read``:inxx ``file.write``:inxx
 
 In Python you can open and write in a file with:
@@ -841,7 +843,7 @@ A related function is ``eval``, which works very much like ``exec`` except that 
 12
 ``:code
 
-### ``import``
+### ``import`` (импортирование модулей)
 ``import``:inxx ``random``:inxx
 The real power of Python is in its library modules. They provide a large and consistent set of Application Programming Interfaces (APIs) to many system libraries (often in a way independent of the operating system).
 
