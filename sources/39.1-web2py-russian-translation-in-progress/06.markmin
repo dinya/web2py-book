@@ -1,9 +1,9 @@
-## The database abstraction layer
+## Уровень абстракции базы данных (DAL)
 ``DAL``:inxx
 
-### Dependencies
+### Зависимости
 
-web2py comes with a Database Abstraction Layer (DAL), an API that maps Python objects into database objects such as queries, tables, and records. The DAL dynamically generates the SQL in real time using the specified dialect for the database back end, so that you do not have to write SQL code or learn different SQL dialects (the term SQL is used generically), and the application will be portable among different types of databases. A partial list of supported databases is show in the table below. Please check on the web2py web site and mailing list for more recent adapters. Google NoSQL is treated as a particular case in Chapter 13.
+web2py поставляется с Уровень абстракции базы данных (DAL), an API that maps Python objects into database objects such as queries, tables, and records. The DAL dynamically generates the SQL in real time using the specified dialect for the database back end, so that you do not have to write SQL code or learn different SQL dialects (the term SQL is used generically), and the application will be portable among different types of databases. A partial list of supported databases is show in the table below. Please check on the web2py web site and mailing list for more recent adapters. Google NoSQL is treated as a particular case in Chapter 13.
 
 The Gotchas section at the end of this chapter has some more information about specific databases.
 
@@ -132,7 +132,7 @@ The connection string is called a ``_uri`` because it is an instance of a Unifor
 
 The DAL allows multiple connections with the same database or with different databases, even databases of different types. For now, we will assume the presence of a single database since this is the most common situation.
 
-#### DAL signature
+#### Сигнатура DAL
 ``
 DAL(uri='sqlite://dummy.db',
     pool_size=0,
@@ -195,7 +195,7 @@ A connection with the database is established by creating an instance of the DAL
 **Google/NoSQL/NDB** | ``google:datastore+ndb``
 -------------
 
-Notice that in SQLite the database consists of a single file. If it does not exist, it is created. This file is locked every time it is accessed. In the case of MySQL, PostgreSQL, MSSQL, FireBird, Oracle, DB2, Ingres and Informix the database "test" must be created outside web2py. Once the connection is established, web2py will create, alter, and drop tables appropriately. 
+Notice that in SQLite the database consists of a single file. If it does not exist, it is created. This file is locked every time it is accessed. In the case of MySQL, PostgreSQL, MSSQL, FireBird, Oracle, DB2, Ingres and Informix the database "test" must be created outside web2py. Once the connection is established, web2py will create, alter, and drop tables appropriately.
 
 In the Google/NoSQL case the ``+ndb`` option turns on NDB. NDB uses a Memcache buffer to read data that is accessed often. This is completely automatic and done at the datastore level, not at the web2py level.
 
@@ -218,7 +218,7 @@ db = DAL('...', db_codec='latin1')
 Otherwise you'll get UnicodeDecodeError tickets.
 
 
-#### Connection pooling
+#### Пул соединений
 ``connection pooling``:inxx
 
 A common argument of the DAL constructor is the ``pool_size``; it defaults to zero.
@@ -237,28 +237,28 @@ Connection pooling is ignored for SQLite, since it would not yield any benefit.
 If web2py fails to connect to the database it waits 1 seconds and by default tries again up to 5 times before declaring a failure. In case of connection pooling it is possible that a pooled connection that stays open but unused for some time is closed by the database end. Thanks to the retry feature web2py tries to re-establish these dropped connections.
 The number of attempts is set via the attempts parameter.
 
-#### Lazy Tables
+#### Ленивые таблицы (lazy tables)
 setting ``lazy_tables = True`` provides a major performance boost. See below: [[lazy tables #lazy_tables]]
 
 #### Model-less applications
-Using web2py's model directory for your application models is very convenient and productive. With lazy tables and conditional models, performance is usually acceptable even for large applications. Many experienced developers use this is production environments. 
+Using web2py's model directory for your application models is very convenient and productive. With lazy tables and conditional models, performance is usually acceptable even for large applications. Many experienced developers use this is production environments.
 
 However, it is possible to define DAL tables on demand inside controller functions or modules. This may make sense when the number or complexity of table definitions overloads the use of lazy tables and conditional models.
 
 This is referred to as "model-less" development by the web2py community.
- It means less use of the automatic execution of python files in the model directory. 
+ It means less use of the automatic execution of python files in the model directory.
 It does not imply abandoning the concept of models, views and controllers.
 
 Web2py's auto-execution of python code inside the model directory does this for you:
 
 + models are run automatically every time a request is processed
-+ models access web2py's global scope. 
++ models access web2py's global scope.
 
-Models also make for useful interactive shell sessions when web2py is started with the -M commandline option. 
+Models also make for useful interactive shell sessions when web2py is started with the -M commandline option.
 
 Also, remember maintainability: other web2py developers expect to find model definitions in the model directory.
 
-To use the "model-less" approach, you take responsibility for doing these two housekeeping tasks. 
+To use the "model-less" approach, you take responsibility for doing these two housekeeping tasks.
 You call the table definitions when you need them, and provide necessary access to global scope via the current object. (as documented in chapter 4 [[sharing global with the current object ../04#current_object]] )
 
 For example, a typical model-less application may leave the definitions of the database connection objects in the model file, but define the tables on demand per controller function.
@@ -267,7 +267,7 @@ The typical case is to move the table definitions to a module file (a python fil
 
 If the function to define a set of tables is called ``define_employee_tables()`` in a module called "table_setup.py", your controller that wants to refer to the tables related to employee records in order to make an SQLFORM needs to call the ``define_employee_tables()`` function before accessing any tables. The ``define_employee_tables()`` function needs to access the database connection object in order to define tables. This is why you need to correctly use the ``current`` object in the module file containing ``define_employee_tables()`` (as mentioned above).
 
-#### Replicated databases
+#### Реплицированные базы данных
 
 The first argument of ``DAL(...)`` can be a list of URIs. In this case web2py tries to connect to each of them. The main purpose for this is to deal with multiple database servers and distribute the workload among them). Here is a typical use case:
 
@@ -280,7 +280,7 @@ will try the second and the third. This can also be used to distribute load
 in a database master-slave configuration. We will talk more about this
 in Chapter 13 in the context of scalability.
 
-#### Reserved keywords
+#### Зарезервированные ключевые слова
 ``reserved Keywords``:inxx
 
 ``check_reserved`` tells the constructor to check table names and column names against reserved SQL keywords in target back-end databases. ``check_reserved`` defaults to None.
@@ -312,7 +312,7 @@ The following database backends support reserved words checking.
 **Oracle** | ``oracle``
 -----
 
-#### Database quoting and case settings (entity_quoting, ignore_field)
+#### Database quoting and case settings (``entity_quoting``, ``ignore_field``)
 
 You can also use explicit quoting of SQL entities at DAL level.  It works transparently so you can use the same names in python and in the DB schema.
 
@@ -327,13 +327,13 @@ db.define_table('table1', Field('column'), Field('COLUMN'))
 print db(db.table1.COLUMN != db.table1.column).select()
 ``:code
 
-#### Other DAL constructor parameters
+#### Прочие параметры конструктора DAL
 
-##### Database folder location
-``folder`` – where .table files will be created. Automatically set within web2py. Use an explicit path when using DAL outside web2py
+##### Раположение каталога с базой данных
+``folder`` â€“ where .table files will be created. Automatically set within web2py. Use an explicit path when using DAL outside web2py
 
-##### Default migration settings
-Migration is detailed below in Tables [[table migrations #table_migrations]]. The DAL constructor migration settings are booleans affecting defaults and global behaviour. 
+##### Настройки миграции по умолчанию
+Migration is detailed below in Tables [[table migrations #table_migrations]]. The DAL constructor migration settings are booleans affecting defaults and global behaviour.
 
 ``migrate = True`` sets default migrate behavior for all tables
 
@@ -352,7 +352,7 @@ Start by creating a connection. For the sake of example, you can use SQLite. Not
 
 
 [[table_constructor]]
-### Table constructor
+### Конструктор таблиц
 ``define_table``:inxx ``Field``:inxx
 
 #### define_table signature
@@ -383,15 +383,15 @@ Tables are defined in the DAL via ``define_table``:
 
 It defines, stores and returns a ``Table`` object called "person" containing a field (column) "name". This object can also be accessed via ``db.person``, so you do not need to catch the return value.
 
-#### ``id``: Notes about the primary key 
+#### ``id``: замечания по поводу первичного ключа (Notes about the primary key)
 Do not declare a field called "id", because one is created by web2py anyway. Every table has a field called "id" by default. It is an auto-increment integer field (starting at 1) used for cross-reference and for making every record unique, so "id" is a primary key. (Note: the id counter starting at 1 is back-end specific. For example, this does not apply to the Google App Engine NoSQL.)
 
 ``named id field``:inxx
-Optionally you can define a Field of ``type='id'`` and web2py will use this field as auto-increment id field. This is not recommended except when accessing legacy database tables which have a primary key under a different name. 
+Optionally you can define a Field of ``type='id'`` and web2py will use this field as auto-increment id field. This is not recommended except when accessing legacy database tables which have a primary key under a different name.
 With some limitation, you can also use different primary keys using the ``primarykey`` parameter. [[primarykey #primarykey]] is explained shortly below.
 
-#### ``plural`` and ``singular``
-Smartgrid objects may need to know the singular and plural name of the table. The defaults are smart but these parameters allow you to be specific. See smartgrid for more information. 
+#### ``plural`` и ``singular``
+Smartgrid objects may need to know the singular and plural name of the table. The defaults are smart but these parameters allow you to be specific. See smartgrid for more information.
 #### ``redefine``
 Tables can be defined only once but you can force web2py to redefine an existing table:
 
@@ -442,16 +442,16 @@ See [[Legacy Databases #LegacyDatabases]] below.
 If you define your own Table class as a sub-class of gluon.dal.Table, you can provide it here; this allows you to extend and override methods. Example: ``table_class=MyTable``:code
 
 #### ``sequence_name``
-(Optional) The name of a custom table sequence (if supported by the database). Can create a SEQUENCE (starting at 1 and incrementing by 1) or use this for legacy tables with custom sequences. Note that when necessary, web2py will create sequences automatically by default (starting at 1). 
+(Optional) The name of a custom table sequence (if supported by the database). Can create a SEQUENCE (starting at 1 and incrementing by 1) or use this for legacy tables with custom sequences. Note that when necessary, web2py will create sequences automatically by default (starting at 1).
 
 #### ``trigger_name``
-(optional) Relates to ``sequence_name``. Relevant for some backends which do not support auto-increment numeric fields. 
+(optional) Relates to ``sequence_name``. Relevant for some backends which do not support auto-increment numeric fields.
 
 #### ``polymodel``
 For Google App Engine
 
 #### ``on_define``
-``on_define`` is a callback triggered when a lazy_table is instantiated, although it is called anyway if the table is not lazy. This allows dynamic changes to the table without losing the advantages of delayed instantiation. 
+``on_define`` is a callback triggered when a lazy_table is instantiated, although it is called anyway if the table is not lazy. This allows dynamic changes to the table without losing the advantages of delayed instantiation.
 
 Example:
 ``
@@ -472,10 +472,10 @@ web2py models are executed before controllers, so all tables are defined at ever
 
 #### Adding attributes to fields and tables
 If you need to add custom attributes to fields, you can simply do this:
-``db.table.field.extra = {}``:code 
+``db.table.field.extra = {}``:code
 
-"extra" is not a keyword ; it's a custom attributes now attached to the field object. You can do it with tables too but they must be preceded by an 
-underscore to avoid naming conflicts with fields: 
+"extra" is not a keyword ; it's a custom attributes now attached to the field object. You can do it with tables too but they must be preceded by an
+underscore to avoid naming conflicts with fields:
 
 ``db.table._extra = {} ``:code
 
@@ -509,7 +509,7 @@ Notice that ``requires=...`` is enforced at the level of forms, ``required=True`
 - ``notnull=True`` translates into the "NOT NULL" SQL statement. It prevents the database from inserting null values for the field.
 - ``unique=True`` translates into the "UNIQUE" SQL statement and it makes sure that values of this field are unique within the table. It is enforced at the database level.
 - ``uploadfield`` applies only to fields of type "upload". A field of type "upload" stores the name of a file saved somewhere else, by default on the filesystem under the application "uploads/" folder. If ``uploadfield`` is set to True, then the file is stored in a blob field within the same table and the value of ``uploadfield`` is the name of the blob field. This will be discussed in more detail later in the context of SQLFORM.
-- ``uploadfolder`` defaults to the application's "uploads/" folder. If set to a different path, files will uploaded to a different folder. 
+- ``uploadfolder`` defaults to the application's "uploads/" folder. If set to a different path, files will uploaded to a different folder.
 -------
 For example,
 ``
@@ -528,7 +528,7 @@ will upload files to the "web2py/applications/myapp/static/temp" folder.
 - ``compute`` is an optional function. If a record is inserted or updated, the compute function will be executed and the field will be populated with the function result. The record is passed to the compute function as a ``dict``, and the dict will not include the current value of that, or any other compute field.
 - ``authorize`` can be used to require access control on the corresponding field, for "upload" fields only. It will be discussed more in detail in the context of Authentication and Authorization.
 - ``autodelete`` determines if the corresponding uploaded file should be deleted when the record referencing the file is deleted. For "upload" fields only. However, records deleted by the database itself due to a CASCADE operation will not trigger web2py's autodelete. The web2py Google group has workaround discussions.
-- ``represent`` can be None or can point to a function that takes a field value and returns an alternate representation for the field value. 
+- ``represent`` can be None or can point to a function that takes a field value and returns an alternate representation for the field value.
 -------
 Examples:
 ``
@@ -917,7 +917,7 @@ Finally, you can drop tables and all data will be lost:
 >>> db.person.drop()
 ``:code
 
-Note for sqlite: web2py will not re-create the dropped table until you navigate the file system to the databases directory of your app, and delete the file associated with the dropped table. 
+Note for sqlite: web2py will not re-create the dropped table until you navigate the file system to the databases directory of your app, and delete the file associated with the dropped table.
 
 ### Indexes
 
@@ -1181,14 +1181,14 @@ Row objects also have two important methods:
 ``
 row.delete_record()
 ``
-and 
+and
 ``
 row.update_record(name="new value")
 ``
 
 #### Using an iterator-based select for lower memory use
 
-Python "iterators" are a type of "lazy-evaluation". They 'feed' data one step at time; traditional python loops create the entrire set of data in memory before looping. 
+Python "iterators" are a type of "lazy-evaluation". They 'feed' data one step at time; traditional python loops create the entrire set of data in memory before looping.
 
 The traditional use of select is:
 ``
@@ -1205,10 +1205,10 @@ Testing shows this is around 10% faster as well, even on machines with large RAM
 
 
 #### Rendering rows using represent
-You may wish to rewrite rows returned by select to take advantage of formatting information contained in the represents setting of the fields. 
+You may wish to rewrite rows returned by select to take advantage of formatting information contained in the represents setting of the fields.
 
 ``
-rows = db(query).select()  
+rows = db(query).select()
 repr_row = rows.render(0)
 ``:code
 
@@ -1544,8 +1544,8 @@ Bob
 ``orderby_on_limitby``:inxx
 Note that the DAL defaults to implicitly adding an orderby when using a limitby.
 This ensures the same query returns the same results each time, important for pagination.
-But it can cause performance problems. 
-use ``orderby_on_limitby = False`` to change this (this defaults to True). 
+But it can cause performance problems.
+use ``orderby_on_limitby = False`` to change this (this defaults to True).
 
 ##### left
 Discussed below in the section on joins
@@ -1877,8 +1877,8 @@ db.person.update_or_insert(db.person.name == 'John',
 
 and if there is John his birthplace will be updated else a new record will be created.
 
-The selection criteria in the example above is a single field. 
-It can also be a query, such as 
+The selection criteria in the example above is a single field.
+It can also be a query, such as
 ``
 db.person.update_or_insert((db.person.name == 'John') & (db.person.birthplace == 'Chicago'),
                            name='John',
@@ -3202,7 +3202,7 @@ Some times a callback may need to perform an update in the same or a different t
 For this purpose there the Set objects have an ``update_naive`` method that works like ``update`` but ignores before and after callbacks.
 
 ##### Database cascades
-Database schema can define relationships which trigger deletions of related records, known as cascading. The DAL is not informed when a record is deleted due to a cascade. So an ``on_delete`` trigger will not be called due a cascade-deletion. 
+Database schema can define relationships which trigger deletions of related records, known as cascading. The DAL is not informed when a record is deleted due to a cascade. So an ``on_delete`` trigger will not be called due a cascade-deletion.
 
 [[versioning]]
 #### Record versioning
@@ -3712,7 +3712,7 @@ MSSQL < 2012 does not support the SQL OFFSET keyword. Therefore the database can
 If you're using MSSQL >= 2005, the recommended prefix to use is ``mssql3://`` which provides a method to avoid the issue of fetching the entire non-paginated resultset. If you're on MSSQL >= 2012, use ``mssql4://`` that uses the ``OFFSET ... ROWS ... FETCH NEXT ... ROWS ONLY`` construct to support natively pagination without performance hits like other backends.
 The ``mssql://`` uri also enforces (for historical reasons) the use of ``text`` columns, that are superseeded in more recent versions (from 2005 onwards) by ``varchar(max)``. ``mssql3://`` and ``mssql4://`` should be used if you don't want to face some limitations of the - officially deprecated - ``text`` columns
 
-MSSQL has problems with circular references in tables that have ONDELETE CASCADE. This is an MSSQL bug and you work around it by setting the ondelete attribute for all reference fields to "NO ACTION". 
+MSSQL has problems with circular references in tables that have ONDELETE CASCADE. This is an MSSQL bug and you work around it by setting the ondelete attribute for all reference fields to "NO ACTION".
 You can also do it once and for all before you define tables:
 
 ``
@@ -3736,13 +3736,13 @@ db(query).select(distinct=db.mytable.myfield)
 
 #### Oracle
 
-Oracle also does not support pagination. It does not support neither the OFFSET nor the LIMIT keywords. Web2py achieves pagination by translating a ``db(...).select(limitby=(a,b))`` into a complex three-way nested select (as suggested by official Oracle documentation). 
+Oracle also does not support pagination. It does not support neither the OFFSET nor the LIMIT keywords. Web2py achieves pagination by translating a ``db(...).select(limitby=(a,b))`` into a complex three-way nested select (as suggested by official Oracle documentation).
 This works for simple select but may break for complex selects involving aliased fields and or joins.
 
 #### Google NoSQL (Datastore)
-Google NoSQL (Datastore) does not allow joins, left joins, aggregates, expression, OR involving more than one table, the ‘like’ operator searches in "text" fields. 
+Google NoSQL (Datastore) does not allow joins, left joins, aggregates, expression, OR involving more than one table, the â€˜likeâ€™ operator searches in "text" fields.
 
-Transactions are limited and not provided automatically by web2py (you need to use the Google API ``run_in_transaction`` which you can look up in the Google App Engine documentation online). 
+Transactions are limited and not provided automatically by web2py (you need to use the Google API ``run_in_transaction`` which you can look up in the Google App Engine documentation online).
 
-Google also limits the number of records you can retrieve in each one query (1000 at the time of writing). On the Google datastore record IDs are integer but they are not sequential. 
+Google also limits the number of records you can retrieve in each one query (1000 at the time of writing). On the Google datastore record IDs are integer but they are not sequential.
 While on SQL the "list:string" type is mapped into a "text" type, on the Google Datastore it is mapped into a ``ListStringProperty``. Similarly "list:integer" and "list:reference" are mapped into "ListProperty". This makes searches for content inside these fields types are more efficient on Google NoSQL than on SQL databases.

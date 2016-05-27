@@ -1251,7 +1251,7 @@ T.current_languages = ['null']
 def index(): return auth.wiki()
 ``:code
 
-Все! У нас есть полностью рабочая Вики.
+Все! Теперь у нас есть полностью рабочая Вики.
 Просим заметить, что Вики требуется определение некоторых таблиц, и они будут определены (автоматически?) при первом обращении к контроллеру.
 
 Если Вы хотите, чтобы они были явно доступны, используйте ``auth.wiki(resolve=False)``, и убидитесь, что миграция таблиц включена:
@@ -1270,7 +1270,8 @@ while the authors can create pages (with some optional restrictions) and can onl
 {{=content}}
 ``:code
 
-and add extra HTML or code as needed. You do not have to use the "index" action to expose the wiki. You can use an action with a different name.
+и по необходимости добавить HTML или Python-код.
+Вы не должны использовать действие "index" для открытия Вики. Вы можете использовать действие с другим именем. (You do not have to use the "index" action to expose the wiki. You can use an action with a different name.)
 
 Для проверки Вики, просто залогиньтеь как admin и посетите страницу
 
@@ -1278,7 +1279,7 @@ and add extra HTML or code as needed. You do not have to use the "index" action 
 http://127.0.0.1:8000/wikidemo/default/index
 ``
 
-Далее выберете slug (в издательском деле, slug - это сокращенное название статьи, находящейся подготовке (in production)) и
+Далее выберете краткий заголовок (slug) (в издательском деле, slug - это сокращенное название статьи, находящейся подготовке (in production)) и
 Вы будете перенаправлены на пустую страницу, где Вы моджете отредактировать контент (содержимое), используя MARKMIN Вики синтаксис.
 Новый пункт меню под названием "[wiki]" позволит Вам создавать, искать и редактировать страницы.
 Страницы Вики имеют URL'ы подобно этим:
@@ -1321,48 +1322,48 @@ def wiki(self, slug=None, env=None, render='markmin',
 - ``restrict_search``. This defaults to ``False`` and any logged-in user can search all wiki pages (but not necessary read or edit them). If set to ``True``, authors can search only their own pages, editors can search everything, other users cannot search anything.
 - ``menu_groups``. This defaults to ``None`` and it indicates that wiki management menu (search, create, edit, etc.) is always displayed. You can set it to a list of group names whose members only can see this menu, for example ``['wiki_editor','wiki_author']``. Notice that even if the menu is exposed to everybody that does not mean everybody is allowed to perform actions listed in the menu since they are regulated by the access control system.
 
-The ``wiki`` method has some additional parameters which will be explained later: ``slug``, ``env``, and ``extra``.
+Метод ``wiki`` имеет несколько дополнительных параметров, которые будут рассмотрены ниже: ``slug``, ``env`` и ``extra``.
 
+#### Основы MARKMIN
 
-
-#### MARKMIN basics
-
-The MARKMIN syntax allows you to markup **bold** text using ``**bold**``, ''italic'' text with ``''italic''``, and ``code`` text should be delimited by double inverted quotes. Titles must be prefixed by a #, sections by ##, and sub-sections by ###. Use a minus(-) to prefix an un-ordered item and plus(+) to prefix an ordered item. URLs are automatically converted into links. Here is an example of markmin text:
+Синтаксис MARKMIN позволяет Вам проводит разметку следующим образом: **жирный** текст, используя ``**жирный**``, ''курсив'',
+используя ``''italic''``, и ``код``, используя ``!`!!`!код!`!!`!``.
+Главы должны начинаться с ``#``, разделы с ``##``, а подразделы с ``###``.
+Используйте минус (``-``) для выделения элемента неупорядоченного списка и плюс (``+``) - для упорядоченного (пронумерованного) списка.
+URL-адреса автомтически преобразуются в ссылки. Вот пример markmin-текста:
 
 ``
-# This is a title
-## this is a section title
-### this is a subsection title
+# Это глава
+## Это раздел
+### Это подраздел
 
-Text can be **bold**, ''italic'', !`!!`!code!`!!`! etc.
-Learn more at:
+Текст может быть **жирным**, ''курсивом'', !`!!`!кодом!`!!`! и т.д.
+Узнайте больше на:
 
 http://web2py.com
-``:code
+``
 
+Вы можете использовать параметр ``extra`` из ``auth.wiki``, чтобы передать дополнительные правила отображения (рендеринга) для MARKMIN хелпера (helper).
 
-You can use the ``extra`` parameter of ``auth.wiki`` to pass extra rendering rules to the MARKMIN helper.
+Вы можете получить больше информации о синтаксисе MARKMIN в главе 5.
 
-You can find more information about the MARKMIN syntax in chapter 5.
+``auth.wiki`` - это нечто более мощное, чем MARKMIN хелперы, поддерживающие oEmbed и компоненты.
+(``auth.wiki`` is more powerful than the barebones MARKMIN helpers, supporting oembed and components.)
 
-``auth.wiki`` is more powerful than the barebones MARKMIN helpers, supporting oembed and components.
-
-You can use the ``env`` parameter of ``auth.wiki`` to expose functions to your wiki.
-For example:
-
+Вы можете использовать ``env`` параметр ``auth.wiki`` для добавления функций в Вашу Вики.
+К примеру:
 ``
 auth.wiki(env=dict(join=lambda a:"-".join(a.split(","))))
 ``
 
-allows you to use the markup syntax:
-
+позволяет Вам использовать следующий синтаксис разметки:
 ``
 @(join:1,2,3)
 ``
 
-This calls the join function passed to env with parameters ``a,b,c=1,2,3`` and will be rendered as ``1-2-3``.
+Он вызывает функцию ``join``, переданную в ``env`` с параметрами ``a,b,c=1,2,3``, и будет отображен как ``1-2-3``.
 
-#### Oembed protocol
+#### Протокол oEmbed
 
 You can type in (or cut-and-paste) any URL into a wiki page and it is rendered as a link to the URL. There are exceptions:
 
@@ -1418,15 +1419,15 @@ EMBED_MAPS.append((re.compile('http://vimeo.com/\S*'),
                    'http://vimeo.com/api/oembed.json'))
 ``:code
 
-#### Referencing wiki content
+#### Ссылки на содержимое Вики
 
-If you create a wiki page with slug "contactus" you can refer to this page as
+Если Вы создали страницу Вики с кратким заголовком (slug) "contactus", Вы можете обратится на эту страницу как
 
 ``
 \@////contactus
 ``:code
 
-Here @````//// stands for
+Здесь @````//// расшифровывается как
 
 ``
 \@/app/controller/function/
@@ -1715,12 +1716,15 @@ creation and connections. For activities like these (i.e. if you need persistenc
 Also under the controllers tab in ''edit'' there is a "crontab" link. By clicking on this link you will be able to edit the web2py crontab file. This follows the same syntax as the Unix crontab but does not rely on Unix. In fact, it only requires web2py, and it works on Windows. It allows you to register actions that need to be executed in background at scheduled times.
 For more information about this, see the next chapter.
 
-#### Errors
+#### Ошибки
 ``errors``:inxx
 
-When programming web2py, you will inevitably make mistakes and introduce bugs. web2py helps in two ways: 1) it allows you to create tests for every function that can be run in the browser from the ''edit'' page; and 2) when an error manifests itself, a ticket is issued to the visitor and the error is logged.
+Программируя с web2py, Вы неизбежно будете делать ошибки и привносить баги.
+web2py помогает двумя способами:
+1) Он позволяет создавать тесты для каждой функции, которые можно запустить из браузера на странице ''edit'';
+и 2) Если ошибка себя проявляет, пользователю выдается тикет билет, а ошибка регистрируется.
 
-Intentionally introduce an error in the images application as shown below:
+Намеренно внесем ошибку в приложение с картинками, как показано ниже:
 ``
 def index():
     images = db().select(db.image.ALL, orderby=db.image.title)
@@ -1728,11 +1732,11 @@ def index():
     return dict(images=images)
 ``:code
 
-When you access the index action, you get the following ticket:
+Когда Вы обратитесь к действию ``index``, Вы получите следующий тикет:
 
 [[image @///image/en4800.png center 480px]]
 
-Only the administrator can access the ticket:
+Только администратор имеет доступ к тикету:
 
 [[image @///image/en4900.png center 480px]]
 
