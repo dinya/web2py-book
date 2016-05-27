@@ -1230,28 +1230,40 @@ Mind that by default English is not translated because web2py assumes the applic
 T.current_languages = ['null']
 ``
 
-### The built-in web2py wiki
+### Вики, встроенная в web2py (The built-in web2py wiki)
 
-Now you can forget the code we have built-in the previous section (not what you have learned about web2py APIs, just the code of the specific example) as we are going to provide an example of the built-in web2py wiki.
+Теперь Вы можете забыть код, который мы создали в предыдущем разделе
+(не все, что вы узнали об API web2py, просто код конкретного примера),
+поскольку мы собираемся представить пример встроенной в web2py Вики.
 
-In fact, web2py comes with wiki capabilities including media attachments, tags, tag cloud, page permissions, and support for oembed ``oembed``:cite and components (chapter 14). This wiki can be used with any web2py application.
+По сути, Вики web2py поставляется с таким возможностями, как медиа-файлы, теги, облако тегов,
+страницу разрешений и поддержку oEmbed ``oembed``:cite и компонентов (глава 14).
+Эта Вики может быть использована с любым приложением web2py.
 
 ------
-Notice the API of the built-in wiki is still considered experimental and small changes are still possible.
+Отметим, что API встроенного Вики по-прежнему считается экспериментальным и небольшие изменения все еще возможны.
 ------
 
-Here we assume we are starting from scratch from a simple clone of the "welcome" application called "wikidemo". Edit the controller and replace the "index" action with
+Мы предполагаем, что начинаем с нуля от простого клона приложения "welcome" под названием "wikidemo".
+Отредактируем контроллер и заменим действие "index" на
 
 ``
 def index(): return auth.wiki()
 ``:code
 
-Done! You have a fully working wiki. 
-Please note that wiki needs some tables to be defined, and they'll only be defined when accessing the controller. If you want them to be readily available, use ``auth.wiki(resolve=False)``, and make sure table migrations are turned on: more on that on the **Extending-the-auth-wiki-feature** section following.
+Все! У нас есть полностью рабочая Вики.
+Просим заметить, что Вики требуется определение некоторых таблиц, и они будут определены (автоматически?) при первом обращении к контроллеру.
 
-At this point no page has been created and in order to create pages you must be logged-in and you must be member of a group called "wiki_editor" or "wiki_author". If you are logged-in as administrator the "wiki_editor" group is created automatically and you are made a member. The difference between editors and authors is that the editors can create pages, edit and delete any page, while the authors can create pages (with some optional restrictions) and can only edit/delete the pages they have created.
+Если Вы хотите, чтобы они были явно доступны, используйте ``auth.wiki(resolve=False)``, и убидитесь, что миграция таблиц включена:
+подробнее об этом далее в **Extending-the-auth-wiki-feature**.
 
-The ``auth.wiki()`` function returns in a dictionary with a key ``content`` which is understood by the scaffolding "views/default/index.html". You can make your own view for this action:
+At this point no page has been created and in order to create pages you must be logged-in and you must be member
+of a group called "wiki_editor" or "wiki_author". If you are logged-in as administrator the "wiki_editor" group is created automatically and
+you are made a member. The difference between editors and authors is that the editors can create pages, edit and delete any page,
+while the authors can create pages (with some optional restrictions) and can only edit/delete the pages they have created.
+
+Функция ``auth.wiki()`` возвращает словарь с ключом ``content``,  which is understood by the scaffolding "views/default/index.html".
+Вы можете создать Ваше собственное представление для этого действия:
 
 ``
 {{extend 'layout.html'}}
@@ -1260,19 +1272,22 @@ The ``auth.wiki()`` function returns in a dictionary with a key ``content`` whic
 
 and add extra HTML or code as needed. You do not have to use the "index" action to expose the wiki. You can use an action with a different name.
 
-To try the wiki, simply login into admin, visit the page
+Для проверки Вики, просто залогиньтеь как admin и посетите страницу
 
 ``
 http://127.0.0.1:8000/wikidemo/default/index
 ``
 
-Then choose a slug (in the publishing business, a slug is a short name given to an article that is in production) and you will be redirected to an empty page where you can edit the content using MARKMIN wiki syntax. A new menu item called "[wiki]" will allow you to create, search, and edit pages. Wiki pages have URLs like:
+Далее выберете slug (в издательском деле, slug - это сокращенное название статьи, находящейся подготовке (in production)) и
+Вы будете перенаправлены на пустую страницу, где Вы моджете отредактировать контент (содержимое), используя MARKMIN Вики синтаксис.
+Новый пункт меню под названием "[wiki]" позволит Вам создавать, искать и редактировать страницы.
+Страницы Вики имеют URL'ы подобно этим:
 
 ``
 http://127.0.0.1:8000/wikidemo/default/index/[slug]
 ``
 
-Service pages have names which start by underscore:
+Сервисные страницы имеют имена, начинающиеся с подчеркивания:
 
 ``
 http://127.0.0.1:8000/wikidemo/default/index/_create
@@ -1284,11 +1299,11 @@ http://127.0.0.1:8000/wikidemo/default/index/_editmedia/...
 http://127.0.0.1:8000/wikidemo/default/index/_preview/...
 ``
 
-Try to create more pages such as "index", "aboutus", and "contactus".
-Try to edit them.
+Попробуйте создать больше страниц, таких как "index", "aboutus", and "contactus".
+Попробуйте их отредактировать.
 
 
-The ``wiki`` method has the following signature:
+Метод ``wiki`` имеет следующую сигнатуру:
 
 ``
 def wiki(self, slug=None, env=None, render='markmin',
@@ -1297,9 +1312,9 @@ def wiki(self, slug=None, env=None, render='markmin',
          extra=None, menu_groups=None)
 ``:code
 
-It takes the following arguments:
+Он принимает следующие аргументы:
 
-- ``render`` which defaults to ``'markmin'`` but can be set equal to ``'html'``. It determines the syntax of the wiki. We will discuss the markmin wiki markup later. If you change it to HTML you can use a wysiwyg javascript editor such as TinyMCE or NicEdit.
+- ``render`` - по умолчанию ``'markmin'``, но может быть задан как ``'html'``. It determines the syntax of the wiki. We will discuss the markmin wiki markup later. If you change it to HTML you can use a wysiwyg javascript editor such as TinyMCE or NicEdit.
 - ``manage_permissions``. This is set to ``False`` by default and only recognizes permissions for "wiki_editor" and "wiki_author". If you change it to ``True`` the create/edit page will give the option to specify by name the group(s) whose members have permission to read and edit the page. There is a group "everybody" which includes all users.
 
 - ``force_prefix``. If set to something like ``'%(id)s-'`` it will restrict authors (not editors) to creating pages with a prefix like "[user id]-[page name]". The prefix can contain the id ("%(id)s") or the username ("%(username)s") or any other field from the auth_user table, as long as the corresponding column contains a valid string that would pass URL validation.
