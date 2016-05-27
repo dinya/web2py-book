@@ -1,11 +1,12 @@
-## Access Control
+## Контроль доступа
 ``Auth``:inxx ``Access Control``:inxx ``RBAC``:inxx ``DAC``:inxx ``MAC``:inxx
 
-web2py includes a powerful and customizable Role Based Access Control mechanism (RBAC).
+web2py включает в себя мощный и настраеваемый (кастомизируемый) механизм управления доступом на основе ролей (Role Based Access Control mechanism (RBAC)).
 
-Here is a definition from Wikipedia:
+Вот определение из Википедии (EN):
+-----------------
 
-"Role-Based Access Control (RBAC) is an approach to restricting system access to authorized users. It is a newer alternative approach to mandatory access control (MAC) and discretionary access control (DAC). RBAC is sometimes referred to as role-based security.
+Role-Based Access Control (RBAC) is an approach to restricting system access to authorized users. It is a newer alternative approach to mandatory access control (MAC) and discretionary access control (DAC). RBAC is sometimes referred to as role-based security.
 
 RBAC is a policy neutral and flexible access control technology sufficiently powerful to simulate DAC and MAC. Conversely, MAC can simulate RBAC if the role graph is restricted to a tree rather than a partially ordered set.
 
@@ -15,11 +16,13 @@ Within an organization, roles are created for various job functions. The permiss
 
 Since users are not assigned permissions directly, but only acquire them through their role (or roles), management of individual user rights becomes a matter of simply assigning appropriate roles to the user; this simplifies common operations, such as adding a user, or changing a user's department.
 
-RBAC differs from access control lists (ACLs) used in traditional discretionary access control systems in that it assigns permissions to specific operations with meaning in the organization, rather than to low level data objects. For example, an access control list could be used to grant or deny write access to a particular system file, but it would not dictate how that file could be changed."
+RBAC differs from access control lists (ACLs) used in traditional discretionary access control systems in that it assigns permissions to specific operations with meaning in the organization, rather than to low level data objects. For example, an access control list could be used to grant or deny write access to a particular system file, but it would not dictate how that file could be changed.
 
-The web2py class that implements RBAC is called **Auth**.
+-----------------
 
-**Auth** needs (and defines) the following tables:
+Класс web2py, который реализует RBAC называется **Auth**.
+
+Классу **Auth** необходимы (и он их определяет) следующие таблицы: (**Auth** needs (and defines) the following tables:)
 - ``auth_user`` stores users' name, email address, password, and status (registration pending, accepted, blocked)
 - ``auth_group`` stores groups or roles for users in a many-to-many structure. By default, each user is in its own group, but a user can be in multiple groups, and each group can contain multiple users. A group is identified by a role and a description.
 - ``auth_membership`` links users and groups in a many-to-many structure.
@@ -62,7 +65,7 @@ Setting ``signature=True`` adds user and date stamping to auth tables, to track 
 Auth has an optional ``secure=True`` argument, which will force authenticated pages to go over HTTPS. ``https``:inxx
 
 By default, Auth protects logins against cross-site request forgeries (CSRF). This is actually provided by web2py's standard CSRF protection whenever forms are generated in a session. However, under some circumstances, the overhead of creating a session for login,password request and reset attempts may be undesirable. DOS attacks are theoretically possible. CSRF protection can be disabled for Auth forms (as of v 2.6):
-``Auth = Auth(..., csrf_prevention = False)``:code 
+``Auth = Auth(..., csrf_prevention = False)``:code
 Note that doing this purely to avoid session overload on a busy site is not recommended because of the introduced security risk. Instead, see the Deployment chapter for advice on reducing session overheads.
 -------
 The ``password`` field of the ``db.auth_user`` table defaults to a ``CRYPT`` validator, which needs an ``hmac_key``. On legacy web2py applications you may see an extra argument passed to the Auth constructor: ``hmac_key = Auth.get_or_create_key()``. The latter is a function that read the HMAC key from a file "private/auth.key" within the application folder. If the file does not exist it creates a random ``hmac_key``. If multiple apps share the same auth database, make sure they also use the same ``hmac_key``. This is no longer necessary for new applications since passwords are salted with an individual random salt.
@@ -217,7 +220,7 @@ auth.settings.login_form = RPXAccount(request,
 The first line imports the new login method, the second line disables local registration, and the third line asks web2py to use the RPX login method. You must insert your own ``api_key`` provided by Janrain.com, the domain you choose upon registration and the external ``url`` of your login page. To obtain then login at janrain.com, then go to [Deployment][Application Settings]. On the right side there is the "Application Info", The api_key  is called "API Key (Secret)".
 
 The domain is the "Application Domain" without leading "https://" and without the trailing ".rpxnow.com/"
-For example: if you have registered a website as "secure.mywebsite.org", Janrain turns it to the Application Domain "https://secure-mywebsite.rpxnow.com". 
+For example: if you have registered a website as "secure.mywebsite.org", Janrain turns it to the Application Domain "https://secure-mywebsite.rpxnow.com".
 
 
 [[image @///image/en6900.png center 300px]]
@@ -520,7 +523,7 @@ auth.settings.login_methods.append(ldap_auth(mode='cn',
    server='my.ldap.server', base_dn='ou=Users,dc=domain,dc=com'))
 ``:code
 
-There are additional parameters to let web2py 
+There are additional parameters to let web2py
 
 - read additional data like the username from LDAP
 - implement group control
@@ -570,7 +573,7 @@ which stores the openid usernames for each user. If you want to display the open
 
 We have previously discussed integration with Janrain, yet sometimes you do not want to rely on a third party service and you want to access a OAuth2.0 provider directly;
 for example, Facebook, Linkedin, Twitter, Google all of them provide an OAuth2.0 authentication service.
-web2py handles the OAuth2.0 flow transparently so that a user can be verified against any configured OAuth2.0 
+web2py handles the OAuth2.0 flow transparently so that a user can be verified against any configured OAuth2.0
 provider during login.
 Other than authentication an OAuth2.0 provider can grant to any web2py application access to user resources
 with restricted access thought a proprietary API.  Google, Twitter, Facebook and so on, all have APIs that can be
@@ -580,7 +583,7 @@ It must be underlined that OAuth2.0 is limited only to authentication and author
 (for instance CAS has more functionalities), this means that each OAuth2.0 provider
 has a different way to receive a unique id from their user database through one of their APIs.
 Specific methods are well explained on respective provider documentation, they usually consist in a very
-simple REST call.  This is why for each OAuth2.0 provider there is the need to write a few lines of code. 
+simple REST call.  This is why for each OAuth2.0 provider there is the need to write a few lines of code.
 
 Before writing any instructions in the application model a first step is needed for any provider: registering a new application;  this is usually done
 on provider's site and is explained in provider's documentation.
@@ -592,7 +595,7 @@ application:
  3. the application identification token and secret received upon registration of the new application;
  4. the permissions that the provider must grant to the web2py application, i.e. the "scope" (see the provider's documentation);
  5. the API call to receive a UID of the authenticating user, as explained on providers documentation.
- 
+
 Point 1 to 4 are used to initialize the authorization endpoint used by web2py to communicate with the OAuth2.0 provider.
 The unique id is retrieved by web2py with a call to the get_user() method when needed during the login flow; this is where
 the API call of point 5 is needed.
@@ -665,11 +668,11 @@ class FaceBookAccount(OAuthAccount):
                 username = user['id']
             else:
                 username = user['username']
-                
+
             if not user.has_key('email'):
                 email = '%s.fakemail' %(user['id'])
             else:
-                email = user['email']    
+                email = user['email']
 
             return dict(first_name = user['first_name'],
                         last_name = user['last_name'],
@@ -820,7 +823,7 @@ authentication security. The setting adds an extra step in the login process.
 In the first step, users are shown the standard username/password form. If they
 successfully pass this challenge by submitting the correct username and password,
 and two-factor authentication is enabled for the user, the server will present
-a second form before logging them in. 
+a second form before logging them in.
 
 [[image @///image/two_factor_steps.png center 800px]]
 
@@ -829,7 +832,7 @@ a second form before logging them in.
 
 This case is a good example for apps where users can enable/disable two-factor authentication by them self.
 
-This form will ask users for a six-digit code that has been emailed to their accounts (the server emails the code if the username and password was correct). By default the user will 3 attempts to introduce the code. If the code is incorrect after 3 attempts, the second verification step is treated as having failed and the user must complete the first challenge (username/password) again. 
+This form will ask users for a six-digit code that has been emailed to their accounts (the server emails the code if the username and password was correct). By default the user will 3 attempts to introduce the code. If the code is incorrect after 3 attempts, the second verification step is treated as having failed and the user must complete the first challenge (username/password) again.
 
 - Create a group (also known as a role) for the two-step verification. In this example it will be called ``auth2step`` and the description may be ``Two-step verification``.
 - Give a user membership of this role.
@@ -837,11 +840,11 @@ This form will ask users for a six-digit code that has been emailed to their acc
 ``
 auth.settings.two_factor_authentication_group = "auth2step"
 ``:code
-- Don’t forget to configure the email server in db.py
+- Donâ€™t forget to configure the email server in db.py
 
 #####This functionality can be enabled for the entire app:
 
-This form will ask users for a six-digit code that has been emailed to their accounts (the server emails the code if the username and password was correct). By default the user will 3 attempts to introduce the code. If the code is incorrect after 3 attempts, the second verification step is treated as having failed and the user must complete the first challenge (username/password) again. 
+This form will ask users for a six-digit code that has been emailed to their accounts (the server emails the code if the username and password was correct). By default the user will 3 attempts to introduce the code. If the code is incorrect after 3 attempts, the second verification step is treated as having failed and the user must complete the first challenge (username/password) again.
 
 ``
 auth.settings.auth_two_factor_enabled = True
@@ -909,7 +912,7 @@ auth.settings.extra_fields['auth_user'] = [
 
 OFFSET = 60 #Be sure is the same in your OTP Client
 
-#Set session.auth_two_factor to None. Because the code is generated by external app. 
+#Set session.auth_two_factor to None. Because the code is generated by external app.
 # This will avoid to use the default setting and send a code by email.
 def _set_two_factor(user, auth_two_factor):
     return None
@@ -1272,8 +1275,8 @@ def give_me_time():
 Basic login is often the only option for services (described in the next chapter), but it is disabled by default.
 
 #### Application Management via privileged users (Experimental)
-Normally administrator functions such as defining users and groups are managed by the server administrator. However, you may want a group of privileged users to have administrator rights for a specific application. 
-This is possible with versions after web2py v2.5.1 
+Normally administrator functions such as defining users and groups are managed by the server administrator. However, you may want a group of privileged users to have administrator rights for a specific application.
+This is possible with versions after web2py v2.5.1
 (Upgrading an existing application requires the new appadmin controller and the new appadmin.html view, copied from the welcome app. Also, apps created prior to web2py v2.6 need the new javascript file in welcome/static/js/web2py.js)
 
 The concept allows different management settings, each of which allows a user group to edit a certain set of tables in this application.
@@ -1299,7 +1302,7 @@ This URL appears as /appadmin/manage/auth.
 ##### Advanced use
 This mechanism allows multiple management settings; each additional management setting is just another key defined in auth.settings.manager_actions.
 
-For example, you may want a group of users (such as 'Super') to have access to every table in a management setting called "db_admin", and another group (such as 'Content Manager') to have admin access to tables relating to content in a management setting called "content_admin". 
+For example, you may want a group of users (such as 'Super') to have access to every table in a management setting called "db_admin", and another group (such as 'Content Manager') to have admin access to tables relating to content in a management setting called "content_admin".
 
 This can be set up like this:
 ``
@@ -1309,7 +1312,7 @@ auth.settings.manager_actions = dict(
     content_mgr_group_v2 = dict(role='Content Manager v2', db=content_db,
         tables=['articles','recipes','comments'],
         smartgrid_args=dict(
-           DEFAULT=dict(maxtextlength=50,paginate=30), 
+           DEFAULT=dict(maxtextlength=50,paginate=30),
            comments=dict(maxtextlength=100,editable=False)
         )
      )
@@ -1440,11 +1443,11 @@ auth.settings.download_url = URL('download')
 
 These must point to the URL you want to redirect your users to after the various possible ``auth`` actions (in case there is no referrer):
 
-Note: If your app is based on the standard scaffold app Welcome, you use the auth.navbar. 
-To get the settings below to take effect, you need to edit layout.html and set argument referrer_actions = None. 
+Note: If your app is based on the standard scaffold app Welcome, you use the auth.navbar.
+To get the settings below to take effect, you need to edit layout.html and set argument referrer_actions = None.
 auth.navbar(mode='dropdown',referrer_actions=None)
 
-It is also possible to keep referrer_actions for some auth events. 
+It is also possible to keep referrer_actions for some auth events.
 For example
 ``
 auth.navbar(referrer_actions=['login', 'profile'])

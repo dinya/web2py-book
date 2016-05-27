@@ -1,4 +1,4 @@
-## Forms and validators
+## Формы и валидаторы
 
 There are four distinct ways to build forms in web2py:
 - ``FORM`` provides a low-level implementation in terms of HTML helpers. A ``FORM`` object can be serialized into HTML and is aware of the fields it contains. A ``FORM`` object knows how to validate submitted form values.
@@ -24,7 +24,7 @@ Consider as an example a **test** application with the following "default.py" co
 ``
 def display_form():
     form = FORM('Your name:', INPUT(_name='name'), INPUT(_type='submit'))
-    return dict(form=form) 
+    return dict(form=form)
 ``:code
 
 and the associated "default/display_form.html" view:
@@ -166,7 +166,7 @@ form.process(...,dbio=False).accepted
 
 #### Conditional fields
 
-There are times when you only want a field to show up if a condition is met. For example, consider 
+There are times when you only want a field to show up if a condition is met. For example, consider
 the following model:
 
 ``
@@ -253,7 +253,7 @@ def insert_numbers():
    return dict(form=form)
 ``:code
 
-#### Detect record change
+#### Определение изменения записи (Detect record change)
 
 When filling a form to edit a record there is a small probability that another user may concurrently be editing the same record. So when we save the record we want to check for possible conflicts. This can be done:
 
@@ -275,7 +275,7 @@ def edit_dog():
 
 ``record_changed`` works only with a SQLFORM and not with a FORM.
 
-#### Forms and redirection
+#### Формы и перенаправление (Forms and redirection)
 
 The most common way to use forms is via self-submission, so that the submitted field variables are processed by the same action that generated the form. Once the form is accepted, it is unusual to display the current page again (something we are doing here only to keep things simple). It is more common to redirect the visitor to a "next" page.
 
@@ -477,8 +477,8 @@ col3 = {'name':A('what is this?',
 - ``readonly``. If set to True, displays the form as readonly
 - ``comments``. If set to False, does not display the col3 comments
 - ``ignore_rw``. Normally, for a create/update form, only fields marked as writable=True are shown, and for readonly forms, only fields marked as readable=True are shown. Setting ``ignore_rw=True`` causes those constraints to be ignored, and all fields are displayed. This is mostly used in the appadmin interface to display all fields for each table, overriding what the model indicates.
-- ``formstyle``:inxx ``formstyle`` determines the style to be used when serializing the form in html. In a modern app based on the Welcome scaffolding app, the default formstyle is set in db.py using the application's private/appconfig.ini file; the default is currently bootstrap3_inline. Other options are "bootstrap3_stacked","bootstrap2", "table3cols", "table2cols" (one row for label and comment, and one row for input), "ul" (makes an unordered list of input fields), "divs" (represents the form using css friendly divs, for arbitrary customization), "bootstrap" which uses the bootstrap 2.3 form class "form-horizontal". ``formstyle`` can also be a function which generates everything inside the FORM tag. You pass to your form constructor function two arguments, form and fields. Hints can be found in the source code file sqlhtml.py (look for functions named formstyle_) 
-- ``buttons``:inxx ``buttons`` is a list of ``INPUT``s or ``TAG.button``s (though technically could be any combination of helpers) that will be added to a DIV where the submit button would go. 
+- ``formstyle``:inxx ``formstyle`` determines the style to be used when serializing the form in html. In a modern app based on the Welcome scaffolding app, the default formstyle is set in db.py using the application's private/appconfig.ini file; the default is currently bootstrap3_inline. Other options are "bootstrap3_stacked","bootstrap2", "table3cols", "table2cols" (one row for label and comment, and one row for input), "ul" (makes an unordered list of input fields), "divs" (represents the form using css friendly divs, for arbitrary customization), "bootstrap" which uses the bootstrap 2.3 form class "form-horizontal". ``formstyle`` can also be a function which generates everything inside the FORM tag. You pass to your form constructor function two arguments, form and fields. Hints can be found in the source code file sqlhtml.py (look for functions named formstyle_)
+- ``buttons``:inxx ``buttons`` is a list of ``INPUT``s or ``TAG.button``s (though technically could be any combination of helpers) that will be added to a DIV where the submit button would go.
 For example, adding a URL-based back-button (for a multi-page form) and a renamed submit button:
 ``
 buttons = [TAG.button('Back',_type="button",_onClick = "parent.location='%s' " % URL(...),
@@ -571,7 +571,7 @@ form = SQLFORM(table,record_id,readonly=True)
 
 always show all fields in readonly mode, and they cannot be accepted.
 
-Marking a field with ``writable=False`` prevents the field from being part of the form, and causes the form processing to disregard the value of ``request.vars.field`` when processing the form.  However, if you assign a value to ``form.vars.field``, this value ''will'' be part of the insert or update when the form is processed. 
+Marking a field with ``writable=False`` prevents the field from being part of the form, and causes the form processing to disregard the value of ``request.vars.field`` when processing the form.  However, if you assign a value to ``form.vars.field``, this value ''will'' be part of the insert or update when the form is processed.
 This enables you to change the value of fields that for some reason you do not wish to include in a form.
 
 
@@ -1559,7 +1559,7 @@ Mind that the only validators that can be used with ``list:`` type fields are:
 - ``IS_NOT_EMPTY()``
 - ``IS_LIST_OF(...)``
 
-The latter can be used to apply any validator to the individual items in the list. ``multiple=(1,1000)`` requires a selection of between 1 and 1000 items. This enforces selection of at least one choice. 
+The latter can be used to apply any validator to the individual items in the list. ``multiple=(1,1000)`` requires a selection of between 1 and 1000 items. This enforces selection of at least one choice.
 
 #### Text format validators
 
@@ -2120,7 +2120,7 @@ db.define_table('person', Field('name'))
 db.person.name.requires = IS_NOT_IN_DB(db, 'person.name')
 ``:code
 
-It requires that when you insert a new person, his/her name is not already in the database, ``db``, in the field ``person.name``. 
+It requires that when you insert a new person, his/her name is not already in the database, ``db``, in the field ``person.name``.
 
 A set can be used instead of ``db``.
 
@@ -2391,7 +2391,7 @@ Because web2py's HTML objects build on the underlying, simpler objects, the grid
 As the grid passes through different states, such as editing a row, a new request is generated. request.args has information about which state the grid is in.
 
 
-### ``SQLFORM.grid`` 
+### ``SQLFORM.grid``
 The simplest of the two is ``SQLFORM.grid``. Here is an example of usage:
 
 ``
@@ -2407,7 +2407,7 @@ which produces the following page:
 
 The first argument of ``SQLFORM.grid`` can be a table or a query. The grid object will provide access to records matching the query.
 
-Before we dive into the long list of arguments of the grid object we need to understand how it works. The object looks at ``request.args`` in order to decide what to do (browse, search, create, update, delete, etc.). Each button created by the object links the same function (``manage_users`` in the above case) but passes different ``request.args``. 
+Before we dive into the long list of arguments of the grid object we need to understand how it works. The object looks at ``request.args`` in order to decide what to do (browse, search, create, update, delete, etc.). Each button created by the object links the same function (``manage_users`` in the above case) but passes different ``request.args``.
 
 #### login required by default for data updates
 By default all the URLs generated by the grid are digitally signed and verified. This means one cannot perform certain actions (create, update, delete) without being logged-in. These restrictions can be relaxed:
@@ -2491,13 +2491,13 @@ SQLFORM.grid(
     )
 ``:code
 
-- ``fields`` is a list of fields to be fetched from the database. It is also used to determine which fields to be shown in the grid view. However, it doesn't control what is displayed in the separate form used to edit rows. For that, use the readable and writable attribute of the database fields. For example, in a editable grid, suppress updating of a field like this: before creating the SQLFORM.grid, set 
+- ``fields`` is a list of fields to be fetched from the database. It is also used to determine which fields to be shown in the grid view. However, it doesn't control what is displayed in the separate form used to edit rows. For that, use the readable and writable attribute of the database fields. For example, in a editable grid, suppress updating of a field like this: before creating the SQLFORM.grid, set
 ``
 db.my_table.a_field.writable = False
 db.my_table.a_field.readable = False
 
 ``:code
-- ``field_id`` must be the field of the table to be used as ID, for example ``db.mytable.id``. This is useful when the grid query is a join of several tables. Any action button on the grid(add record, view, edit, delete) will work over db.mytable. 
+- ``field_id`` must be the field of the table to be used as ID, for example ``db.mytable.id``. This is useful when the grid query is a join of several tables. Any action button on the grid(add record, view, edit, delete) will work over db.mytable.
 - ``left`` is an optional left join expressions used to build ``...select(left=...)``.
 - ``headers`` is a dictionary that maps 'tablename.fieldname' into the corresponding header label, e.g. ``{'auth_user.email' : 'Email Address'}``
 - ``orderby`` is used as default ordering for the rows. See [[DAL chapter ../06#orderby]] (multiple fields are possible).
@@ -2506,7 +2506,7 @@ db.my_table.a_field.readable = False
 - ``selectable`` can be used to call a custom function on multiple records (a checkbox will be inserted for every row) e.g.
   ``
    selectable = lambda ids : redirect(URL('default', 'mapping_multiple', vars=dict(id=ids)))``:code
-or for multiple action buttons, use a list of tuples: 
+or for multiple action buttons, use a list of tuples:
 `` selectable = [('button label1',lambda...),('button label2',lambda ...)]
 ``:code
 - ``paginate`` sets the max number of rows per page.
@@ -2525,11 +2525,11 @@ def myonvalidation(form):
     print "In onvalidation callback"
     print form.vars
     form.errors= True  #this prevents the submission from completing
-    
+
     #...or to add messages to specific elements on the form
-    form.errors.first_name = "Do not name your child after prominent deities"	
+    form.errors.first_name = "Do not name your child after prominent deities"
     form.errors.last_name = "Last names must start with a letter"
-    response.flash = "I don't like your submission" 
+    response.flash = "I don't like your submission"
 
 def myoncreate(form):
     print 'create!'
@@ -2592,15 +2592,15 @@ ExporterCSV, ExporterXML, ExporterHTML and ExporterTSV are all defined in gluon/
 -----
 
 #### Virtual fields in SQLFORM.grid and smartgrid
-In versions of web2py after 2.6, virtual fields are shown in grids like normal fields: either shown alongside all other fields by default, or by including them in the ``fields`` argument. However, virtual fields are not sortable. 
+In versions of web2py after 2.6, virtual fields are shown in grids like normal fields: either shown alongside all other fields by default, or by including them in the ``fields`` argument. However, virtual fields are not sortable.
 
 In older web2py versions, showing virtual fields in a grid requires use of the ``links`` argument. This is still supported for more recent versions. If table db.t1 has a field called t1.vfield which is based on the values of t1.field1 and t1.field2, do this:
 
-``grid = SQLFORM.grid(db.t1, ..., fields = [t1.field1, t1.field2,...], 
+``grid = SQLFORM.grid(db.t1, ..., fields = [t1.field1, t1.field2,...],
    links = [dict(header='Virtual Field 1',body=lambda row:row.vfield),...] )
 ``:code
 
-In all cases, because t1.vfield depends on t1.field1 and t1.field2, these fields must be present in the row. In the example above, this is guaranteed by including t1.field1 and t1.field2 in the fields argument. Alternatively, showing all fields will also work. You can suppress a field from displaying by setting the readable attribute to False. 
+In all cases, because t1.vfield depends on t1.field1 and t1.field2, these fields must be present in the row. In the example above, this is guaranteed by including t1.field1 and t1.field2 in the fields argument. Alternatively, showing all fields will also work. You can suppress a field from displaying by setting the readable attribute to False.
 
 Note that when defining the virtual field, the lambda function must qualify fields with the database name, but in the links argument, this is not necessary.
 So for the example above, the virtual field may be defined like:
@@ -2739,4 +2739,3 @@ They should also be internationalized using the ``T`` operator.
 
 The plural and singular values are then used by ``smartgrid``
 to provide correct names for headers and links.
-
